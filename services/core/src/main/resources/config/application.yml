@@ -1,0 +1,39 @@
+server:
+  port: 8180
+spring:
+  config:
+    import: optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+  profiles:
+    active: dev
+  application:
+    name: core
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST:localhost:3306}/cloud_oj?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:123456}
+    hikari:
+      minimum-idle: ${DB_POOL_SIZE:6}
+      maximum-pool-size: ${DB_POOL_SIZE:6}
+  jackson:
+    default-property-inclusion: non_null
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_HOST:localhost}:${NACOS_PORT:8848}
+        namespace: 3fde09c7-0223-4dd8-9c14-888c9e282bc6
+        group: DEFAULT_GROUP
+      config:
+        server-addr: ${NACOS_HOST:localhost}:${NACOS_PORT:8848}
+        namespace: 3fde09c7-0223-4dd8-9c14-888c9e282bc6
+        file-extension: yaml
+        group: DEFAULT_GROUP
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 128MB
+management:
+  endpoint:
+    health:
+      show-details: ALWAYS

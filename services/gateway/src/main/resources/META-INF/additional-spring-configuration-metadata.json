@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "app.token-valid-time",
+      "type": "java.lang.Integer",
+      "description": "Token 有效时间."
+    }
+  ]
+}

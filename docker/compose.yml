@@ -1,0 +1,120 @@
+services:
+  nacos:
+    image: nacos/nacos-server:v2.4.3
+    environment:
+      - MODE=standalone
+      - PREFER_HOST_MODE=hostname
+      - NACOS_AUTH_ENABLE=false
+      - NACOS_NAMESPACE=3fde09c7-0223-4dd8-9c14-888c9e282bc6
+      - JVM_XMS=256m
+      - JVM_XMX=256m
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    networks:
+      - cloud-oj
+    volumes:
+      - "nacos:/home/nacos/data"
+  gateway:
+    image: cloud-oj:gateway
+    depends_on:
+      - "nacos"
+      - "mysql"
+      - "rabbitmq"
+    networks:
+      - cloud-oj
+    environment:
+      JVM_OPTS: "-Xmx200m"
+      NACOS_HOST: "nacos"
+      DB_HOST: "mysql:3306"
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWD}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "3"
+  core:
+    image: cloud-oj:core
+    depends_on:
+      - "nacos"
+      - "mysql"
+      - "rabbitmq"
+    networks:
+      - cloud-oj
+    volumes:
+      - "data:/var/lib/cloud-oj"
+    environment:
+      JVM_OPTS: "-Xmx200m"
+      NACOS_HOST: "nacos"
+      DB_HOST: "mysql:3306"
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWD}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "3"
+  judge:
+    image: cloud-oj:judge
+    privileged: true
+    depends_on:
+      - "nacos"
+      - "mysql"
+      - "rabbitmq"
+    networks:
+      - cloud-oj
+    volumes:
+      - "data:/var/lib/cloud-oj"
+    environment:
+      JVM_OPTS: "-Xmx300m"
+      NACOS_HOST: "nacos"
+      DB_HOST: "mysql:3306"
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWD}
+      RABBIT_URL: rabbitmq
+      RABBIT_PORT: ${RABBIT_PORT}
+      RABBIT_USER: ${RABBIT_USER}
+      RABBIT_PASSWORD: ${RABBIT_PASSWD}
+      JUDGE_CPUS: 1
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "3"
+  web:
+    image: cloud-oj:web
+    networks:
+      - cloud-oj
+    ports:
+      - "80:80"
+    environment:
+      API_HOST: "gateway:8080"
+  mysql:
+    image: mysql:8.0.29
+    networks:
+      - cloud-oj
+    volumes:
+      - "mysql:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWD}
+      MYSQL_ROOT_HOST: "%"
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    hostname: rabbitmq
+    networks:
+      - cloud-oj
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBIT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASSWD}
+    volumes:
+      - "rabbitmq:/var/lib/rabbitmq/mnesia"
+networks:
+  cloud-oj:
+    driver: bridge
+volumes:
+  nacos:
+  mysql:
+  rabbitmq:
+  data:

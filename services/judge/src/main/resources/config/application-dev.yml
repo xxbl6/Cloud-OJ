@@ -1,0 +1,11 @@
+spring:
+  cloud:
+    consul:
+      discovery:
+        prefer-ip-address: true
+logging:
+  level:
+    root: info
+    cloud.oj: info
+app:
+  judge-cpus: 0,1

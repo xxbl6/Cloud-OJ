@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "app",
+      "type": "cloud.oj.judge.config.AppConfig",
+      "description": "应用程序配置."
+    },
+    {
+      "name": "app.judge-cpus",
+      "type": "java.lang.String",
+      "description": "判题使用的 CPU 核心, 逗号分隔."
+    },
+    {
+      "name": "app.file-dir",
+      "type": "java.lang.String",
+      "description": "文件存放目录."
+    }
+  ]
+}

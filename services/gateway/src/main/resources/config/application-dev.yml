@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    consul:
+      discovery:
+        prefer-ip-address: true
+logging:
+  level:
+    root: info
+    cloud.oj: info
