@@ -1,0 +1,19 @@
+name = "cloud-oj"
+compatibility_date = "2025-9-30"
+
+[site]
+bucket = "./web/dist"
+
+# 开发环境配置
+[dev]
+port = 8080
+local_protocol = "http"
+
+[build]
+command = "npm install && npm run build"
+watch_dir = "src"
+
+
+
+[observability.logs]
+enabled = true
