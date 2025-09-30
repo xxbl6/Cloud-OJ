@@ -2,7 +2,7 @@ name = "cloudoj"
 compatibility_date = "2025-9-30"
 
 [site]
-bucket = "./web/dist"
+bucket = "web/dist"
 
 # 开发环境配置
 [dev]
@@ -10,8 +10,8 @@ port = 8080
 local_protocol = "http"
 
 [build]
-command = "npm install && npm run build"
-watch_dir = "src"
+command = "cd web && npm install && npm run build"
+watch_dir = "web/src"
 
 
 
